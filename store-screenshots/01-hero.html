@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 1280px;
+  height: 800px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #e8eef5;
+  background-image: radial-gradient(circle, #c5d0de 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* macOS browser window */
+.browser-window {
+  width: 1100px;
+  height: 680px;
+  margin: 60px auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.25), 0 8px 20px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Toolbar */
+.toolbar {
+  height: 50px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #d1d1d1;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 0;
+  flex-shrink: 0;
+}
+.traffic-lights { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.tl { width: 13px; height: 13px; border-radius: 50%; }
+.tl-red   { background: #ff5f57; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.15); }
+.tl-yellow{ background: #febc2e; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.1); }
+.tl-green { background: #28c840; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.1); }
+.toolbar-spacer { flex: 1; }
+.address-bar {
+  flex: 0 0 420px;
+  height: 30px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #d1d1d1;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 6px;
+  font-size: 12.5px;
+  color: #333;
+}
+.address-bar .lock { color: #1a8a34; font-size: 11px; }
+.address-bar .url .domain { font-weight: 500; color: #111; }
+.toolbar-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 6px; }
+.toolbar-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 15px; color: #555; }
+.toolbar-icon.ext-active { background: #eef2ff; outline: 2px solid #4f46e5; font-size: 14px; }
+
+/* Viewport */
+.viewport {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Wireframe webpage */
+.page-nav {
+  height: 56px;
+  background: #1e293b;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 32px;
+  flex-shrink: 0;
+}
+.page-logo-block { width: 110px; height: 24px; background: rgba(255,255,255,0.15); border-radius: 4px; }
+.page-nav-links { display: flex; gap: 20px; }
+.page-nav-link { width: 68px; height: 10px; background: rgba(255,255,255,0.2); border-radius: 3px; }
+.page-nav-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+.page-nav-btn { width: 80px; height: 28px; background: rgba(255,255,255,0.12); border-radius: 14px; }
+.page-nav-btn-cta { width: 90px; height: 28px; background: rgba(99,102,241,0.7); border-radius: 14px; }
+
+.page-hero {
+  height: 280px;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  display: flex;
+  align-items: center;
+  padding: 0 48px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-text-area { display: flex; flex-direction: column; gap: 12px; flex: 0 0 420px; }
+.hero-line-1 { width: 260px; height: 14px; background: #cbd5e1; border-radius: 4px; }
+.hero-line-2 { width: 340px; height: 24px; background: #94a3b8; border-radius: 4px; }
+.hero-line-3 { width: 300px; height: 24px; background: #94a3b8; border-radius: 4px; }
+.hero-line-4 { width: 380px; height: 10px; background: #cbd5e1; border-radius: 3px; margin-top: 4px; }
+.hero-line-5 { width: 320px; height: 10px; background: #cbd5e1; border-radius: 3px; }
+.hero-btn-row { display: flex; gap: 12px; margin-top: 8px; }
+.hero-btn-block { width: 110px; height: 36px; background: #64748b; border-radius: 6px; }
+.hero-btn-block-ghost { width: 110px; height: 36px; background: transparent; border: 2px solid #94a3b8; border-radius: 6px; }
+.hero-image-block {
+  position: absolute;
+  right: 40px; top: 30px;
+  width: 400px; height: 220px;
+  background: linear-gradient(135deg, #dde4ee 0%, #c8d4e3 100%);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.hero-image-inner {
+  width: 100%; height: 100%;
+  background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(148,163,184,0.15) 20px, rgba(148,163,184,0.15) 40px);
+}
+
+.page-content {
+  background: #f8fafc;
+  padding: 28px 32px;
+  display: flex;
+  gap: 16px;
+}
+.content-card {
+  flex: 1;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.card-icon-block { width: 36px; height: 36px; background: #e2e8f0; border-radius: 8px; }
+.card-title-block { width: 80%; height: 11px; background: #cbd5e1; border-radius: 3px; }
+.card-text-block { width: 100%; height: 8px; background: #e2e8f0; border-radius: 3px; }
+.card-text-block.short { width: 70%; }
+.card-link-block { width: 50%; height: 8px; background: #bfdbfe; border-radius: 3px; margin-top: 4px; }
+
+/* Extension popup */
+.popup-wrapper {
+  position: absolute;
+  top: 60px; right: 20px;
+  z-index: 100;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.12);
+  border-radius: 10px;
+}
+.popup {
+  width: 465px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.popup-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.popup-icon { width: 20px; height: 20px; }
+.popup-title { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+.popup-subline { font-size: 11px; color: #6b7280; margin-bottom: 14px; line-height: 1.5; }
+.scan-btn {
+  width: 100%;
+  padding: 10px;
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  display: block;
+  text-align: center;
+}
+.feedback-link {
+  text-align: center;
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 10px;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="browser-window">
+  <div class="toolbar">
+    <div class="traffic-lights">
+      <div class="tl tl-red"></div>
+      <div class="tl tl-yellow"></div>
+      <div class="tl tl-green"></div>
+    </div>
+    <div class="toolbar-spacer"></div>
+    <div class="address-bar">
+      <span class="lock">🔒</span>
+      <span class="url"><span class="domain">example-site.com</span></span>
+    </div>
+    <div class="toolbar-right">
+      <div class="toolbar-icon ext-active"><img src="../icons/icon128_light.png" style="width:16px;height:16px;" alt=""></div>
+      <div class="toolbar-icon">⭐</div>
+      <div class="toolbar-icon">⋮</div>
+    </div>
+  </div>
+
+  <div class="viewport">
+    <div class="page-nav">
+      <div class="page-logo-block"></div>
+      <div class="page-nav-links">
+        <div class="page-nav-link"></div>
+        <div class="page-nav-link"></div>
+        <div class="page-nav-link"></div>
+        <div class="page-nav-link"></div>
+      </div>
+      <div class="page-nav-right">
+        <div class="page-nav-btn"></div>
+        <div class="page-nav-btn-cta"></div>
+      </div>
+    </div>
+
+    <div class="page-hero">
+      <div class="hero-text-area">
+        <div class="hero-line-1"></div>
+        <div class="hero-line-2"></div>
+        <div class="hero-line-3"></div>
+        <div class="hero-line-4"></div>
+        <div class="hero-line-5"></div>
+        <div class="hero-btn-row">
+          <div class="hero-btn-block"></div>
+          <div class="hero-btn-block-ghost"></div>
+        </div>
+      </div>
+      <div class="hero-image-block">
+        <div class="hero-image-inner"></div>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="content-card">
+        <div class="card-icon-block"></div>
+        <div class="card-title-block"></div>
+        <div class="card-text-block"></div>
+        <div class="card-text-block short"></div>
+        <div class="card-link-block"></div>
+      </div>
+      <div class="content-card">
+        <div class="card-icon-block"></div>
+        <div class="card-title-block"></div>
+        <div class="card-text-block"></div>
+        <div class="card-text-block short"></div>
+        <div class="card-link-block"></div>
+      </div>
+      <div class="content-card">
+        <div class="card-icon-block"></div>
+        <div class="card-title-block"></div>
+        <div class="card-text-block"></div>
+        <div class="card-text-block short"></div>
+        <div class="card-link-block"></div>
+      </div>
+      <div class="content-card">
+        <div class="card-icon-block"></div>
+        <div class="card-title-block"></div>
+        <div class="card-text-block"></div>
+        <div class="card-text-block short"></div>
+        <div class="card-link-block"></div>
+      </div>
+    </div>
+
+    <!-- Extension Popup -->
+    <div class="popup-wrapper">
+      <div class="popup">
+        <div class="popup-header">
+          <img class="popup-icon" src="../icons/icon128_light.png" alt="">
+          <span class="popup-title">Broken UI Finder</span>
+        </div>
+        <div class="popup-subline">
+          Scannt die aktuelle Seite auf häufige UI-Probleme: fehlende Alt-Attribute,
+          Kontrast-Verstöße, doppelte IDs, broken Links und unlabelled Formularfelder.
+        </div>
+        <div class="scan-btn">Seite scannen</div>
+        <div class="feedback-link">💬 Feedback geben</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

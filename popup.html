@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Broken UI Finder</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="header">
+      <img class="header-icon" src="icons/icon128_light.png" alt="Broken UI Finder" />
+      <h2>Broken UI Finder</h2>
+    </div>
+
+    <p class="subline">Analysiert die aktuelle Seite auf häufige UI-Probleme wie fehlende Alt-Texte, Layout Shifts, Overflow und mehr.</p>
+    <button id="scanBtn">Seite scannen</button>
+    <div id="scanNote" hidden></div>
+
+    <!-- Tab Navigation — wird nach dem ersten Scan eingeblendet -->
+    <nav class="tab-nav" id="tabNav" hidden>
+      <button class="tab-btn active" data-tab="layout">
+        Layout<span class="tab-badge" id="badge-layout"></span>
+      </button>
+      <button class="tab-btn" data-tab="a11y">
+        A11y<span class="tab-badge" id="badge-a11y"></span>
+      </button>
+      <button class="tab-btn" data-tab="struktur">
+        Struktur<span class="tab-badge" id="badge-struktur"></span>
+      </button>
+    </nav>
+
+    <!-- Tab Panels -->
+    <div id="tabPanels" hidden>
+
+      <!-- 📐 Layout -->
+      <div class="tab-panel active" id="panel-layout">
+        <div class="checks">
+          <div class="check-card" id="overflowCard">
+            <div class="check-header" id="overflowHeader">
+              <div>
+                <span class="check-pill">Overflow</span>
+                <div class="check-title" id="overflowTitle"></div>
+                <div class="check-sub">Webseite breiter als der Viewport</div>
+              </div>
+            </div>
+            <ul class="image-list" id="overflowList"></ul>
+          </div>
+          <div class="check-card" id="sizeCard">
+            <div class="check-header" id="sizeHeader">
+              <div>
+                <span class="check-pill">Layout Shift</span>
+                <div class="check-title" id="sizeTitle"></div>
+                <div class="check-sub">Verhindert Layout Shifts (CLS)</div>
+              </div>
+            </div>
+            <ul class="image-list" id="sizeList"></ul>
+          </div>
+          <div class="check-card" id="responsiveCard">
+            <div class="check-header" id="responsiveHeader">
+              <div>
+                <span class="check-pill">Responsive</span>
+                <div class="check-title" id="responsiveTitle"></div>
+                <div class="check-sub">Potenzielle Probleme auf kleinen Bildschirmen</div>
+              </div>
+            </div>
+            <ul class="image-list" id="responsiveList"></ul>
+          </div>
+          <div class="check-card" id="zIndexCard">
+            <div class="check-header" id="zIndexHeader">
+              <div>
+                <span class="check-pill">Z-Index</span>
+                <div class="check-title" id="zIndexTitle"></div>
+                <div class="check-sub">Hohe z-index Werte & fixierte Elemente ohne z-index</div>
+              </div>
+            </div>
+            <ul class="image-list" id="zIndexList"></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ♿ A11y -->
+      <div class="tab-panel" id="panel-a11y">
+        <div class="checks">
+          <div class="check-card" id="altCard">
+            <div class="check-header" id="altHeader">
+              <div>
+                <span class="check-pill">Alt Attr</span>
+                <div class="check-title" id="altTitle"></div>
+                <div class="check-sub">Barrierefreiheit & SEO</div>
+              </div>
+            </div>
+            <ul class="image-list" id="altList"></ul>
+          </div>
+          <div class="check-card" id="contrastCard">
+            <div class="check-header" id="contrastHeader">
+              <div>
+                <span class="check-pill">Contrast</span>
+                <div class="check-title" id="contrastTitle"></div>
+                <div class="check-sub">Text mit zu geringem Kontrast (WCAG AA)</div>
+              </div>
+            </div>
+            <ul class="image-list" id="contrastList"></ul>
+          </div>
+          <div class="check-card" id="formLabelsCard">
+            <div class="check-header" id="formLabelsHeader">
+              <div>
+                <span class="check-pill">Form Label</span>
+                <div class="check-title" id="formLabelsTitle"></div>
+                <div class="check-sub">Eingabefelder ohne Label oder aria-label</div>
+              </div>
+            </div>
+            <ul class="image-list" id="formLabelsList"></ul>
+          </div>
+          <div class="check-card" id="hiddenCard">
+            <div class="check-header" id="hiddenHeader">
+              <div>
+                <span class="check-pill">Hidden</span>
+                <div class="check-title" id="hiddenTitle"></div>
+                <div class="check-sub">Möglicherweise unzugängliche Elemente</div>
+              </div>
+            </div>
+            <ul class="image-list" id="hiddenList"></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔗 Struktur -->
+      <div class="tab-panel" id="panel-struktur">
+        <div class="checks">
+          <div class="check-card" id="brokenLinksCard">
+            <div class="check-header" id="brokenLinksHeader">
+              <div>
+                <span class="check-pill">Broken Link</span>
+                <div class="check-title" id="brokenLinksTitle"></div>
+                <div class="check-sub">Leere, tote oder fehlende href-Attribute</div>
+              </div>
+            </div>
+            <ul class="image-list" id="brokenLinksList"></ul>
+          </div>
+          <div class="check-card" id="duplicateIdsCard">
+            <div class="check-header" id="duplicateIdsHeader">
+              <div>
+                <span class="check-pill">Duplicate ID</span>
+                <div class="check-title" id="duplicateIdsTitle"></div>
+                <div class="check-sub">IDs müssen eindeutig sein — Duplikate brechen Anchor-Links & JS-Selektoren</div>
+              </div>
+            </div>
+            <ul class="image-list" id="duplicateIdsList"></ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Feedback Trigger — vor Scan unter Button, nach Scan unter Panels -->
+    <div id="feedbackTriggerWrap" class="feedback-trigger-wrap">
+      <button id="feedbackTrigger" class="feedback-trigger">💬 Feedback geben</button>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="modal-overlay" hidden>
+      <div class="modal">
+        <div class="modal-header">
+          <span>Feedback</span>
+          <button id="closeModal" class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-desc">Fehlende Funktion entdeckt oder einen Bug gefunden? Öffnet ein vorausgefülltes GitHub Issue.</p>
+          <textarea id="feedbackText" class="modal-textarea" placeholder="z.B. &quot;Overflow-Check meldet false positives auf...&quot;"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button id="submitFeedback" class="modal-submit">↗ Als GitHub Issue öffnen</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
