@@ -60,13 +60,14 @@ Finds all `id` attributes that appear more than once in the DOM. Shows the dupli
 
 ## Usage
 
-1. Load the extension in Chrome (`chrome://extensions` → Developer mode → **Load unpacked** → select folder)
+1. Click the extension icon in the toolbar
 2. Open any webpage
-3. Click the extension icon in the toolbar
-4. Click **"Seite scannen"** (Scan page)
-5. Results appear in the popup, organized by tab
+3. Click **"Seite scannen"** (Scan page)
+4. Results appear in the popup, organized by tab
 
-The three tabs (Layout / A11y / Struktur) appear after the first scan. Each tab shows a badge with the number of issues found. Cards with no issues are sorted to the top.
+The three tabs (Layout / A11y / Struktur) appear after the first scan. Each tab shows a badge with the number of issues found.
+
+Scan results persist when the popup is closed and reopened. Results are cleared automatically when you navigate to a different URL or tab.
 
 ---
 
@@ -74,12 +75,9 @@ The three tabs (Layout / A11y / Struktur) appear after the first scan. Each tab 
 
 - By default **5 entries** are shown per check
 - If more exist, an **"X weitere anzeigen" (Show X more)** button appears
-- Expandable items show a **Highlight** button (dark blue) and a **Copy** button (gray) side by side
 - **Highlight** scrolls to the affected element and shows a floating pink **"BUI #01"** badge for 2.5 seconds
 - **Copy** copies the associated value (URL, selector, etc.) to the clipboard
 - Items are marked with status icons: red circle-! for errors, orange triangle-! for warnings
-
-Scan results persist when the popup is closed and reopened. Results are cleared automatically when you navigate to a different URL or tab.
 
 ---
 
@@ -89,27 +87,4 @@ A **"Feedback geben"** button is available in the popup. Clicking it opens a pre
 
 ---
 
-## Project Structure
-
-```
-Broken UI Finder/
-├── icons/
-│   ├── icon16.png
-│   ├── icon48.png
-│   └── icon128.png
-├── store-screenshots/  — HTML mockup files for store listing
-├── manifest.json       — Extension config (Manifest V3)
-├── popup.html          — Extension UI
-├── popup.css           — Styles
-├── popup.js            — Scan logic & UI rendering
-```
-
----
-
-## Technical
-
-- **Manifest V3** — current Chrome extension API
-- **Permissions:** `activeTab`, `scripting`, `storage` — no persistent page access beyond scan results
-- Runs entirely **locally** — no data is sent externally
-- Browser extension elements (e.g. custom sidebar elements) are filtered out from results
-- To publish: a Chrome Web Store developer account is required (one-time fee of $5)
+Runs entirely locally — no data is sent externally.
