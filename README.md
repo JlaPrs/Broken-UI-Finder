@@ -102,7 +102,6 @@ Broken UI Finder/
 ├── popup.html          — Extension UI
 ├── popup.css           — Styles
 ├── popup.js            — Scan logic & UI rendering
-└── generate-icons.js   — Icon generator script
 ```
 
 ---
