@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Broken UI Finder",
-  "version": "1.0",
-  "description": "Findet Bilder ohne alt-Attribut auf der aktuellen Seite.",
+  "version": "1.1",
+  "description": "__MSG_extDescription__",
+  "default_locale": "de",
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "src/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
